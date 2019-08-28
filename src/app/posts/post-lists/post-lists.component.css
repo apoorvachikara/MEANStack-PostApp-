@@ -1,0 +1,17 @@
+mat-expansion-panel {
+  position: relative;
+  width: 70%;
+  left: 215px;
+}
+
+.nopostYet{
+  position: relative;
+  display: block;
+  width : 70%;
+  height : 30px;
+  left : 215px;
+  border : 1px solid black;
+  padding : 2px;
+  text-align: center;
+  background-color: darkgray;
+}
