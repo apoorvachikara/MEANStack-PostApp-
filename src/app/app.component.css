@@ -2,3 +2,8 @@ main {
   position: relative;
   top : 20px;
 }
+
+app-post-lists .mat-accordion {
+  top: 15px;
+  position: relative;
+}

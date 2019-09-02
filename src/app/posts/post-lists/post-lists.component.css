@@ -16,6 +16,7 @@ mat-expansion-panel {
   background-color: darkgray;
 }
 
+
 .mat-accordion ng-star-inserted{
   top: 15px;
   position: relative;
