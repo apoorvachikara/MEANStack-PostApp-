@@ -27,30 +27,44 @@ app.post('/api/posts' , (req, res, next) =>{
         title: req.body.title,
         content: req.body.content
       });
-      post.save();
-      res.status(201).json({
-        message : "Post added Successfully"
-      })
+      post.save()
+        .then(addedDocument => {
+          res.status(201).json({
+            message : "Post added Successfully",
+            postID : addedDocument._id
+          })
+        })
+        .catch(error => {
+            console.log(error);
+        })
+
 })
 
 app.get('/api/posts', (req, res, next) => {
-        const posts = [
-          {
-            id : '9882739',
-            title : 'Title 1',
-            content : 'Content 1'
-          },
-          {
-            id : '9882740',
-            title : 'Title 2',
-            content : 'Content 2'
-          }
-        ]
 
-        res.status(200).json({
-          message : 'Posts fetched Successfully',
-          posts : posts
-        });
+    Post.find()
+          .then(documents => {
+
+            res.status(200).json({
+              message : 'Posts fetched Successfully',
+              posts : documents
+            });
+          })
+
 });
+
+app.delete('/api/posts/:id', (req, res, next) => {
+    Post.deleteOne({ _id: req.params.id})
+        .then((document)=> {
+          console.log(document);
+          res.status(200).json({
+            message : "Post Deleted Successfully"
+          })
+        })
+        .catch((error) =>{
+            console.log(error);
+        });
+
+})
 
 module.exports = app;
