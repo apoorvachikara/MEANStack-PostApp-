@@ -53,6 +53,23 @@ app.get('/api/posts', (req, res, next) => {
 
 });
 
+app.put('/api/posts/:id', (req, res, next) => {
+    const post = new Post({
+      _id: req.params.id,
+      title: req.body.title,
+      content: req.body.content
+    });
+    Post.updateOne({_id: req.params.id}, post)
+        .then((updatedDocument) => {
+            res.status(200).json({
+              message : 'Posts edited Successfully',
+              posts : updatedDocument
+            })
+        })
+        .catch(error => console.log(error));
+});
+
+
 app.delete('/api/posts/:id', (req, res, next) => {
     Post.deleteOne({ _id: req.params.id})
         .then((document)=> {

@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Subject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Post } from "../posts/post.model";
-import { post } from 'selenium-webdriver/http';
+
 
 @Injectable({
   providedIn: "root"
@@ -49,12 +49,26 @@ export class PostsService {
       });
   }
 
+  public getEditedPost(id: string) {
+        return {...this.posts.find(p => p.id === id)};
+  }
+
+  public updatePost(post: Post) {
+        this.httpClient.put<{message: string, post: Post}>('http://localhost:3000/api/posts/'+ post.id, post )
+            .subscribe((response: {message: string, post: Post}) => {
+                const updatedPost = [...this.posts];
+                const oldPostIndex = this.posts.findIndex(p => p.id === post.id);
+                updatedPost[oldPostIndex] = post;
+                this.posts = updatedPost;
+                this.postsUpdates.next([...this.posts]);
+            });
+  }
   public deleteposts(id) {
-      this.httpClient.delete('http://localhost:3000/api/posts/' + id)
+      this.httpClient.delete<{message: string}>('http://localhost:3000/api/posts/' + id)
         .subscribe((response: {message: string}) => {
             const updatePostList = this.posts.filter(post => post.id !== id);
             this.posts = updatePostList;
             this.postsUpdates.next([...this.posts]  );
-        })
+        });
   }
 }

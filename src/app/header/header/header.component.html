@@ -1,1 +1,9 @@
-<mat-toolbar>New Header </mat-toolbar>
+<mat-toolbar color="primary">
+  <span><a [routerLink]="['/']" > My Messages </a></span>
+  <span class="spacer"></span>
+  <ul>
+    <li>
+      <a mat-button [routerLink]="['/create']" routerLinkActive="mat-accent"> Create </a>
+    </li>
+  </ul>
+</mat-toolbar>
