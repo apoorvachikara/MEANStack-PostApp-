@@ -3,12 +3,12 @@
   <form (submit)="savePost(formValues)" #formValues="ngForm" required>
 
     <mat-form-field>
-        <input matInput type="text" [ngModel]="post.title" name="title" #title="ngModel" placeholder="Enter Title"  required/>
+        <input matInput type="text" [ngModel]="post?.title" name="title" #title="ngModel" placeholder="Enter Title"  required/>
     </mat-form-field>
     <!-- <mat-error *ngIf="title.invalid">Please enter a Title</mat-error> -->
 
     <mat-form-field>
-      <textarea matInput row="6" name="content" [ngModel]="post.content" #content="ngModel" placeholder="Enter Content" required></textarea>
+      <textarea matInput row="6" name="content" [ngModel]="post?.content" #content="ngModel" placeholder="Enter Content" required></textarea>
     </mat-form-field>
     <!-- <mat-error *ngIf="content.invalid">Please enter Content</mat-error> -->
 

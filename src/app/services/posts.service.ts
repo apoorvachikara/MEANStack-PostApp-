@@ -50,7 +50,7 @@ export class PostsService {
   }
 
   public getEditedPost(id: string) {
-        return {...this.posts.find(p => p.id === id)};
+        return this.httpClient.get<{message: string, posts: Post}>('http://localhost:3000/api/posts/' + id);
   }
 
   public updatePost(post: Post) {

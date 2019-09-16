@@ -28,7 +28,9 @@ export class PostCreateComponent implements OnInit {
             if (paramMap.has('postID')) {
                 this.mode = 'edit';
                 this.postID = paramMap.get('postID');
-                this.post = this.postsService.getEditedPost(this.postID);
+                this.postsService.getEditedPost(this.postID).subscribe( postData => {
+                    this.post = { id: postData._id, title: postData.title, content: postData.content }
+                });
             } else {
                 this.mode = 'create';
                 this.postID = null;

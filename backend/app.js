@@ -53,6 +53,20 @@ app.get('/api/posts', (req, res, next) => {
 
 });
 
+app.get('/api/posts/:id', (req, res, next) => {
+    Post.find({ _id: req.params.id})
+      .then(documents => {
+            res.status(200).json({
+              message : 'All post fetch Successful',
+              posts : documents
+              })
+      })
+      .catch( error => {
+        console.log();
+        }
+      )
+})
+
 app.put('/api/posts/:id', (req, res, next) => {
     const post = new Post({
       _id: req.params.id,
