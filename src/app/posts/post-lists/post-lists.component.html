@@ -1,5 +1,5 @@
-
-  <mat-accordion *ngIf="postList.length > 0">
+<mat-spinner *ngIf="isLoading"></mat-spinner>
+  <mat-accordion *ngIf="postList.length > 0 && !isLoading">
     <!-- multi="true" -->
   <mat-expansion-panel *ngFor="let post of postList let i = index">
     <mat-expansion-panel-header>
@@ -13,4 +13,4 @@
   </mat-expansion-panel>
 </mat-accordion>
 
-<p *ngIf="postList.length <= 0" class="nopostYet mat-body-1">No post yet!</p>
+<p *ngIf="postList.length <= 0 && !isLoading" class="nopostYet mat-body-1">No post yet!</p>

@@ -11,3 +11,10 @@ mat-card button{
   text-align: center;
   left: 30%;
 }
+mat-spinner{
+  margin: auto;
+}
+
+input[type="file"] {
+  visibility: hidden;
+}

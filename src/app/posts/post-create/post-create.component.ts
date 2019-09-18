@@ -15,6 +15,7 @@ export class PostCreateComponent implements OnInit {
   public mode = 'create';
   public postID: string;
   public post: Post;
+  public loadingSpinner : boolean = false;
 
   constructor(
     private postsService: PostsService,
@@ -24,12 +25,13 @@ export class PostCreateComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap
           .subscribe((paramMap: ParamMap) => {
-            console.log(paramMap);
             if (paramMap.has('postID')) {
                 this.mode = 'edit';
                 this.postID = paramMap.get('postID');
+                this.loadingSpinner = true;
                 this.postsService.getEditedPost(this.postID).subscribe( postData => {
-                    this.post = { id: postData._id, title: postData.title, content: postData.content }
+                  this.post = { id: postData['posts'][0]['_id'], title: postData['posts'][0]['title'], content: postData['posts'][0]['content'] };
+                  this.loadingSpinner = false;
                 });
             } else {
                 this.mode = 'create';
@@ -42,12 +44,12 @@ export class PostCreateComponent implements OnInit {
     if (form.invalid) {
       return;
     } else if (this.mode === 'create') {
+      this.loadingSpinner = true;
       this.postsService.addPosts({
         title: form.value.title,
         content: form.value.content
       });
     } else {
-      console.log(form.value);
       this.postsService.updatePost({
         title: form.value.title,
         content: form.value.content,

@@ -8,7 +8,8 @@ import {
   MatCardModule,
   MatButtonModule,
   MatToolbarModule,
-  MatExpansionModule
+  MatExpansionModule,
+  MatProgressSpinnerModule
 } from "@angular/material";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -35,6 +36,7 @@ import { PostListsComponent } from "./posts/post-lists/post-lists.component";
     MatButtonModule,
     MatToolbarModule,
     MatExpansionModule,
+    MatProgressSpinnerModule,
     HttpClientModule
   ],
   providers: [],

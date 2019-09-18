@@ -22,3 +22,6 @@ mat-expansion-panel {
   position: relative;
 }
 
+mat-spinner {
+  margin: auto;
+}
