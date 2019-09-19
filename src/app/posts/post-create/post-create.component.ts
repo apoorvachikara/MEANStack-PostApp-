@@ -36,10 +36,11 @@ export class PostCreateComponent implements OnInit {
           this.postID = paramMap.get('postID');
           this.loadingSpinner = true;
           this.postsService.getEditedPost(this.postID).subscribe(postData => {
-            this.post = { id: postData['posts'][0]['_id'], title: postData['posts'][0]['title'], content: postData['posts'][0]['content'] };
+            this.post = { id: postData['posts'][0]['_id'], title: postData['posts'][0]['title'], content: postData['posts'][0]['content'], imagePath: postData['posts'][0]['imagePath'] };
             this.form.setValue({
-              'title': postData['posts'][0]['title'],
-              'content': postData['posts'][0]['content']
+              title: postData['posts'][0]['title'],
+              content: postData['posts'][0]['content'],
+              imagePath: postData['posts'][0]['imagePath']
             });
             this.loadingSpinner = false;
           });
@@ -55,7 +56,7 @@ export class PostCreateComponent implements OnInit {
     this.form = new FormGroup({
       title: new FormControl(null, { validators: [Validators.required, Validators.minLength(3)] }),
       content: new FormControl(null, { validators: [Validators.required] }),
-      image: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType]})
+      imagePath: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType]})
     });
   }
 
@@ -68,20 +69,21 @@ export class PostCreateComponent implements OnInit {
       this.loadingSpinner = true;
       this.postsService.addPosts({
         title: this.form.value.title,
-        content: this.form.value.content
+        content: this.form.value.content,
+        imagePath: this.form.value.image
       });
     } else {
       this.postsService.updatePost({
         title: this.form.value.title,
         content: this.form.value.content,
-        id: this.post.id
+        id: this.post.id,
+        imagePath: this.form.value.imagePath
       });
     }
     this.form.reset();
   }
 
   public imagePicked(event: Event) {
-    console.log(event.target['files']);
     const file = (event.target as HTMLInputElement)['files'][0];
     const reader = new FileReader();
     this.form.patchValue({

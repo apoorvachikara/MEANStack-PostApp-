@@ -25,3 +25,12 @@ mat-expansion-panel {
 mat-spinner {
   margin: auto;
 }
+
+.image{
+  width: 100%;
+}
+
+.image img {
+  width: 100%;
+  box-shadow: 1px 1px 5px rgb(0,0,1)
+}

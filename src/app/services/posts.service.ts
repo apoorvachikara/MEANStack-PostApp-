@@ -5,6 +5,7 @@ import { map } from "rxjs/operators";
 import { Router } from '@angular/router';
 
 import { Post } from "../posts/post.model";
+import { Title } from '@angular/platform-browser';
 
 
 @Injectable({
@@ -14,7 +15,7 @@ export class PostsService {
   constructor(
     private httpClient: HttpClient,
     private router: Router
-    ) { }
+  ) { }
   private posts: Post[] = [];
   private postsUpdates: Subject<Post[]> = new Subject<Post[]>();
 
@@ -28,7 +29,8 @@ export class PostsService {
           return {
             title: post.title,
             content: post.content,
-            id: post._id
+            id: post._id,
+            imagePath: post.imagepath
           }
         })
       }))
@@ -43,12 +45,18 @@ export class PostsService {
   }
 
   public addPosts(posts) {
-    const post: Post = { id: null, title: posts.title, content: posts.content };
+    const postData = new FormData();
+    postData.append('title', posts.title)
+    postData.append('id', null)
+    postData.append('content', posts.content)
+    postData.append('image', posts.image);
+
 
     this.httpClient
-      .post<{ message: string, postID: string }>('http://localhost:3000/api/posts', post)
+      .post<{ message: string, post: { [key: string]: any } }>('http://localhost:3000/api/posts', postData)
       .subscribe(response => {
-        post.id = response.postID;
+        const post: Post = { id: null, title: response.post.title, content: response.post.content, imagePath: response.post.imagePath };
+        post.id = response.post._id;
         this.posts.push(post);
         this.postsUpdates.next([...this.posts]);
         this.rerouteAppToPostList();
@@ -60,8 +68,18 @@ export class PostsService {
   }
 
   public updatePost(post: Post) {
+    let postData: Post | FormData;
+    if( typeof post.imagePath === 'object') {
+      postData = new FormData();
+      postData.append('title', post.title)
+      postData.append('content', post.content)
+      postData.append('id', post.id)
+      postData.append('image', post.imagePath)
+    } else {
+      postData = {...post};
+    }
 
-    this.httpClient.put<{ message: string, post: Post }>('http://localhost:3000/api/posts/' + post.id, post)
+    this.httpClient.put<{ message: string, post: Post }>('http://localhost:3000/api/posts/' + post.id, postData)
       .subscribe((response: { message: string, post: Post }) => {
         const updatedPost = [...this.posts];
         const oldPostIndex = this.posts.findIndex(p => p.id === post.id);
@@ -81,7 +99,7 @@ export class PostsService {
   }
 
   public rerouteAppToPostList() {
-      this.router.navigate(['/']);
-  } 
+    this.router.navigate(['/']);
+  }
 
 }

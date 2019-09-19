@@ -18,13 +18,15 @@ import { AppComponent } from "./app.component";
 import { PostCreateComponent } from "./posts/post-create/post-create.component";
 import { HeaderComponent } from "./header/header/header.component";
 import { PostListsComponent } from "./posts/post-lists/post-lists.component";
+import { TestPipePipe } from './test-pipe.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     PostCreateComponent,
     HeaderComponent,
-    PostListsComponent
+    PostListsComponent,
+    TestPipePipe
   ],
   imports: [
     BrowserModule,

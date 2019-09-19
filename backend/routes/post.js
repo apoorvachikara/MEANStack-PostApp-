@@ -11,30 +11,38 @@ const MIME_Type_Map = {
 
 const storingFile = multer.diskStorage({
   destination: (req, file, cb) =>{
-    const isValid = MIME_Type_Map[file['mimetype']]; 
-    const error = new Error("Invalid MimeType");
+    console.log(file);
+    let isValid = MIME_Type_Map[file['mimetype']]; 
+    let error = new Error("Invalid MimeType");
     if(isValid){
       error = null;
     }
     cb(error, "backend/images");
   },
-  file: (req, file, cb) => {
+  filename: (req, file, cb) => {
     const fileName = file['originalname'].toLowerCase().split(' ').join('-');
+    console.log(fileName);
     const extention = MIME_Type_Map[file['mimetype']];
+    console.log(extention);
     cb(null, fileName + '-' + Date.now() +'.' + extention );
   }
 }); 
 
-router.post('', multer(storingFile).single("image") , (req, res, next) =>{
+router.post('', multer({storage : storingFile}).single("image") , (req, res, next) =>{
+    const URL = req.protocol + '://' + req.get('host');
     const post = new Post({
       title: req.body.title,
-      content: req.body.content
+      content: req.body.content,
+      imagepath: URL + '/images/' + req.file.filename
     });
     post.save()
       .then(addedDocument => {
         res.status(201).json({
           message : "Post added Successfully",
-          postID : addedDocument._id
+          post : {
+            ...addedDocument,
+            _id: addedDocument._id,
+          }
         })
       })
       .catch(error => {
