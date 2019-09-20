@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Subject, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, count } from "rxjs/operators";
 import { Router } from '@angular/router';
 
 import { Post } from "../posts/post.model";
-import { Title } from '@angular/platform-browser';
+
 
 
 @Injectable({
@@ -17,30 +17,36 @@ export class PostsService {
     private router: Router
   ) { }
   private posts: Post[] = [];
-  private postsUpdates: Subject<Post[]> = new Subject<Post[]>();
+  private postsUpdates: Subject<{posts: Post[], count: number}> = new Subject<{posts: Post[], count: number}>();
 
-  public getPosts() {
+  public getPosts(postPerPage: number, currentPage: number) {
+    const queryParams = `?pageSize=${postPerPage}&page=${currentPage}`;
+   
     this.httpClient
-      .get<{ message: string; posts: any }>(
-        "http://localhost:3000/api/posts"
+      .get<{ message: string; posts: any; count: number}>(
+        "http://localhost:3000/api/posts" + queryParams
       )
       .pipe(map(postData => {
-        return postData.posts.map(post => {
+        return {posts: postData.posts.map(post => {
           return {
             title: post.title,
             content: post.content,
             id: post._id,
             imagePath: post.imagepath
           }
-        })
-      }))
-      .subscribe((transformedPost: Post[]) => {
-        this.posts = transformedPost;
-        this.postsUpdates.next([...this.posts]);
+        }),
+        count: postData.count  
+      }
+      })
+      )
+      .subscribe((transformedPost: {posts: Post[], count: number}) => {
+        console.log(transformedPost);
+        this.posts = transformedPost.posts;
+        this.postsUpdates.next({posts: [...this.posts], count: transformedPost.count});
       });
   }
 
-  public getPostsListListener(): Observable<Post[]> {
+  public getPostsListListener(): Observable<{posts: Post[], count: number}> {
     return this.postsUpdates.asObservable();
   }
 
@@ -55,10 +61,6 @@ export class PostsService {
     this.httpClient
       .post<{ message: string, post: { [key: string]: any } }>('http://localhost:3000/api/posts', postData)
       .subscribe(response => {
-        const post: Post = { id: null, title: response.post.title, content: response.post.content, imagePath: response.post.imagePath };
-        post.id = response.post._id;
-        this.posts.push(post);
-        this.postsUpdates.next([...this.posts]);
         this.rerouteAppToPostList();
       });
   }
@@ -81,21 +83,11 @@ export class PostsService {
 
     this.httpClient.put<{ message: string, post: Post }>('http://localhost:3000/api/posts/' + post.id, postData)
       .subscribe((response: { message: string, post: Post }) => {
-        const updatedPost = [...this.posts];
-        const oldPostIndex = this.posts.findIndex(p => p.id === post.id);
-        updatedPost[oldPostIndex] = post;
-        this.posts = updatedPost;
-        this.postsUpdates.next([...this.posts]);
         this.rerouteAppToPostList();
       });
   }
   public deleteposts(id) {
-    this.httpClient.delete<{ message: string }>('http://localhost:3000/api/posts/' + id)
-      .subscribe((response: { message: string }) => {
-        const updatePostList = this.posts.filter(post => post.id !== id);
-        this.posts = updatePostList;
-        this.postsUpdates.next([...this.posts]);
-      });
+      return this.httpClient.delete<{ message: string }>('http://localhost:3000/api/posts/' + id)
   }
 
   public rerouteAppToPostList() {
