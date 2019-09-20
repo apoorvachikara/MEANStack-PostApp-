@@ -21,9 +21,7 @@ const storingFile = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const fileName = file['originalname'].toLowerCase().split(' ').join('-');
-    console.log(fileName);
     const extention = MIME_Type_Map[file['mimetype']];
-    console.log(extention);
     cb(null, fileName + '-' + Date.now() +'.' + extention );
   }
 }); 
@@ -78,11 +76,18 @@ router.get('/:id', (req, res, next) => {
     )
 })
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', multer({ storage: storingFile}).single('image'), (req, res, next) => {
+  let imagepath;
+  imagepath = req.imagePath;
+  if(req.file){
+    imagepath = req.protocol + '://' + req.get('host');
+    imagepath += '/images/' + req.file.filename;
+  }
   const post = new Post({
     _id: req.params.id,
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content, 
+    imagepath: imagepath
   });
   Post.updateOne({_id: req.params.id}, post)
       .then((updatedDocument) => {

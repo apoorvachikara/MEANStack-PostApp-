@@ -37,10 +37,10 @@ export class PostCreateComponent implements OnInit {
           this.loadingSpinner = true;
           this.postsService.getEditedPost(this.postID).subscribe(postData => {
             this.post = { id: postData['posts'][0]['_id'], title: postData['posts'][0]['title'], content: postData['posts'][0]['content'], imagePath: postData['posts'][0]['imagePath'] };
-            this.form.setValue({
+            this.form.setValue({  
               title: postData['posts'][0]['title'],
               content: postData['posts'][0]['content'],
-              imagePath: postData['posts'][0]['imagePath']
+              image: postData['posts'][0]['imagepath']
             });
             this.loadingSpinner = false;
           });
@@ -56,7 +56,7 @@ export class PostCreateComponent implements OnInit {
     this.form = new FormGroup({
       title: new FormControl(null, { validators: [Validators.required, Validators.minLength(3)] }),
       content: new FormControl(null, { validators: [Validators.required] }),
-      imagePath: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType]})
+      image: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType]})
     });
   }
 
@@ -77,7 +77,7 @@ export class PostCreateComponent implements OnInit {
         title: this.form.value.title,
         content: this.form.value.content,
         id: this.post.id,
-        imagePath: this.form.value.imagePath
+        imagePath: this.form.value.image
       });
     }
     this.form.reset();
@@ -86,6 +86,7 @@ export class PostCreateComponent implements OnInit {
   public imagePicked(event: Event) {
     const file = (event.target as HTMLInputElement)['files'][0];
     const reader = new FileReader();
+    console.log(file);
     this.form.patchValue({
       image: file
     });

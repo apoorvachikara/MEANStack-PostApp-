@@ -12,7 +12,6 @@
       <button mat-button type="button" (click)="uploadImage.click()">Image Select</button>
       <input type="file" #uploadImage (change)="imagePicked($event)">
     </div>
-
     <div class="imagePreview" *ngIf="imagePreview !== '' && imagePreview && form.get('image').valid">
       <img [src]="imagePreview" [alt]="form.value.title">
     </div>

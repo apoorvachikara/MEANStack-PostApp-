@@ -49,7 +49,7 @@ export class PostsService {
     postData.append('title', posts.title)
     postData.append('id', null)
     postData.append('content', posts.content)
-    postData.append('image', posts.image);
+    postData.append('image', posts.imagePath);
 
 
     this.httpClient
