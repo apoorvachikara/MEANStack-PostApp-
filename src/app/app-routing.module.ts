@@ -3,6 +3,8 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { PostListsComponent } from "./posts/post-lists/post-lists.component";
 import { PostCreateComponent } from "./posts/post-create/post-create.component";
+import { LoginComponent } from './auth/login/login.component';
+import { SignupComponent } from './auth/signup/signup.component';
 
 const routes: Routes = [
   {
@@ -16,6 +18,14 @@ const routes: Routes = [
   {
     path: "edit/:postID",
     component: PostCreateComponent
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'signup',
+    component: SignupComponent
   }
 ];
 

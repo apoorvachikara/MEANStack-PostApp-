@@ -1,0 +1,17 @@
+mat-card{
+    width: 20%;
+    margin: auto;
+  }
+  mat-form-field, input {
+    width: 100%;
+  }
+  
+  mat-card button{
+    position: relative;
+    text-align: center;
+    left: 30%;
+  }
+
+  mat-spinner{
+    margin: auto;
+  }
