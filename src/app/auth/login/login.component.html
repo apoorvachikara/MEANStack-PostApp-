@@ -13,7 +13,8 @@
         </mat-form-field>
         <mat-error *ngIf="password.invalid">Please enter a valid Password</mat-error>
         
-        <button mat-raised-button color="primary" type="submit"> Login </button>
+        <button mat-raised-button color="primary" type="submit" *ngIf="!loadingSpinner"> Login </button>
+        <mat-spinner *ngIf="loadingSpinner"></mat-spinner>
       </form>  
     </mat-card>
     

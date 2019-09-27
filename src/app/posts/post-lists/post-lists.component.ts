@@ -2,9 +2,10 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Subscription } from "rxjs";
 import { PageEvent } from '@angular/material';
 
-import { PostsService } from "../../services/posts.service";
+import { PostsService } from "../../services/postservice/posts.service";
 
 import { Post } from "../post.model";
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 
 @Component({
   selector: "app-post-lists",
@@ -13,14 +14,22 @@ import { Post } from "../post.model";
 })
 export class PostListsComponent implements OnInit, OnDestroy {
   public postList: Post[] = [];
+  
   private postSubscriptions: Subscription;
+  private authStatusSub: Subscription;
+
   public isLoading: boolean = false;
   public totalPost: number;
   public postPerPage: number = 2;
   public currentPage: number = 1;
   public pageSizeOptions: Array<number> = [1, 2, 4, 10];
 
-  constructor(private postsService: PostsService) { }
+  public isUserAuthenticated: boolean = false;
+
+  constructor(
+    private postsService: PostsService,
+    private authenticationService: AuthenticationService
+    ) { }
 
   public ngOnInit() {
     this.isLoading = true;
@@ -29,6 +38,10 @@ export class PostListsComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       this.postList = newPost.posts;
       this.totalPost = newPost.count;
+    });
+    this.isUserAuthenticated = this.authenticationService.isUserAuthenticated();
+    this.authStatusSub =  this.authenticationService.getAuthStatusListener().subscribe((authStatus) => {
+        this.isUserAuthenticated = authStatus;
     });
   }
 
@@ -39,14 +52,15 @@ export class PostListsComponent implements OnInit, OnDestroy {
     this.postsService.getPosts(this.postPerPage, this.currentPage);
   }
 
-  ngOnDestroy() {
-    this.postSubscriptions.unsubscribe();
-  }
-
   public deletePost(id) {
     this.postsService.deleteposts(id).subscribe(() => {
         this.postsService.getPosts(this.postPerPage, this.currentPage);
     })
+  }
+
+  ngOnDestroy() {
+    this.postSubscriptions.unsubscribe();
+    this.authStatusSub.unsubscribe();
   }
 
 }

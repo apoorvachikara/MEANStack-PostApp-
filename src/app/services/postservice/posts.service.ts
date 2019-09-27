@@ -4,9 +4,7 @@ import { Subject, Observable } from "rxjs";
 import { map, count } from "rxjs/operators";
 import { Router } from '@angular/router';
 
-import { Post } from "../posts/post.model";
-
-
+import { Post } from "../../posts/post.model";
 
 @Injectable({
   providedIn: "root"

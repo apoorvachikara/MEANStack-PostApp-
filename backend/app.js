@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const Post = require('./models/postModel');
 
 const postRoutes = require('./routes/post');
+const userRoutes = require('./routes/user');
 
 // mongodb+srv://post-application-DB:9870228146@meanstackapp-x1a5a.mongodb.net/node-angular?retryWrites=true&w=majority
 mongoose.connect('mongodb://localhost/meanstackapp')
@@ -29,5 +30,6 @@ app.use((req, res, next) => {
 
 // 
 app.use("/api/posts", postRoutes);
+app.use('/api/user', userRoutes);
 
 module.exports = app;
