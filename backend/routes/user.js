@@ -26,9 +26,9 @@ router.post('/signup', (req, res, next) => {
                 })
             });
         });
-    
+
 router.post('/login', (req, res, next) => {
-    
+
     let userFetched;
 
     User.findOne({email: req.body.email})
@@ -39,7 +39,7 @@ router.post('/login', (req, res, next) => {
                 })
             }
             userFetched = user;
-           return bcrypt.compare(req.body.password, user.password)             
+           return bcrypt.compare(req.body.password, user.password)
         })
         .then((result) => {
             console.log(result, 'result');
@@ -50,11 +50,12 @@ router.post('/login', (req, res, next) => {
             }
 
             const token = jwt.sign(
-                {email: userFetched.email, userId: userFetched._id}, 
+                {email: userFetched.email, userId: userFetched._id},
                 'string_to_make_the_JWT_token_stronger',
                 {expiresIn: '1h'}
                 )
             res.status(200).json({
+                userId: userFetched._id,
                 token: token,
                 expires: 3600
             })

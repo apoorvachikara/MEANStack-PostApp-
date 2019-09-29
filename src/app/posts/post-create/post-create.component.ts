@@ -36,11 +36,11 @@ export class PostCreateComponent implements OnInit {
           this.postID = paramMap.get('postID');
           this.loadingSpinner = true;
           this.postsService.getEditedPost(this.postID).subscribe(postData => {
-            this.post = { id: postData['posts'][0]['_id'], title: postData['posts'][0]['title'], content: postData['posts'][0]['content'], imagePath: postData['posts'][0]['imagePath'] };
-            this.form.setValue({  
+            this.post = { id: postData['posts'][0]['_id'], title: postData['posts'][0]['title'], content: postData['posts'][0]['content'], imagePath: postData['posts'][0]['imagePath'], creator: null};
+            this.form.setValue({
               title: postData['posts'][0]['title'],
               content: postData['posts'][0]['content'],
-              image: postData['posts'][0]['imagepath']
+              image: postData['posts'][0]['imagepath'],
             });
             this.loadingSpinner = false;
           });
@@ -77,7 +77,8 @@ export class PostCreateComponent implements OnInit {
         title: this.form.value.title,
         content: this.form.value.content,
         id: this.post.id,
-        imagePath: this.form.value.image
+        imagePath: this.form.value.image,
+        creator: null
       });
     }
     this.form.reset();

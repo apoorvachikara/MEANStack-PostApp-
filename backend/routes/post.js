@@ -13,7 +13,7 @@ const MIME_Type_Map = {
 const storingFile = multer.diskStorage({
   destination: (req, file, cb) =>{
     console.log(file);
-    let isValid = MIME_Type_Map[file['mimetype']]; 
+    let isValid = MIME_Type_Map[file['mimetype']];
     let error = new Error("Invalid MimeType");
     if(isValid){
       error = null;
@@ -25,14 +25,15 @@ const storingFile = multer.diskStorage({
     const extention = MIME_Type_Map[file['mimetype']];
     cb(null, fileName + '-' + Date.now() +'.' + extention );
   }
-}); 
+});
 
 router.post('', checkAuth, multer({storage : storingFile}).single("image") , (req, res, next) =>{
     const URL = req.protocol + '://' + req.get('host');
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
-      imagepath: URL + '/images/' + req.file.filename
+      imagepath: URL + '/images/' + req.file.filename,
+      creator: req.userData.userId
     });
     post.save()
       .then(addedDocument => {
@@ -98,27 +99,42 @@ router.put('/:id', checkAuth, multer({ storage: storingFile}).single('image'), (
   const post = new Post({
     _id: req.params.id,
     title: req.body.title,
-    content: req.body.content, 
-    imagepath: imagepath
+    content: req.body.content,
+    imagepath: imagepath,
+    creator: req.userData.userId
   });
-  Post.updateOne({_id: req.params.id}, post)
+  Post.updateOne({_id: req.params.id, creator: req.userData.userId}, post)
       .then((updatedDocument) => {
+        if(updatedDocument.nModified > 0) {
           res.status(200).json({
             message : 'Posts edited Successfully',
             posts : updatedDocument
+          });
+        }
+        else {
+          res.status(401).json({
+            message: 'Unauthorized Access'
           })
+        }
       })
       .catch(error => console.log(error));
 });
 
 
 router.delete('/:id', checkAuth, (req, res, next) => {
-  Post.deleteOne({ _id: req.params.id})
+  Post.deleteOne({ _id: req.params.id, creator: req.userData.userId})
       .then((document)=> {
-        console.log(document);
-        res.status(200).json({
-          message : "Post Deleted Successfully"
-        })
+        if (document.n > 0) {
+          res.status(200).json({
+            message : "Post Deleted Successfully"
+          })
+        }
+        else {
+          res.status(401).json({
+            message : "Unauthorized Access"
+          })
+        }
+
       })
       .catch((error) =>{
           console.log(error);

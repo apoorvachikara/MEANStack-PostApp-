@@ -15,6 +15,7 @@ export class AuthenticationService {
 
   private isAuthenticated: boolean = false;
   private token: string;
+  private userId: string;
   private authStatusListener = new Subject<boolean>();
   private tokenTimer: NodeJS.Timer;
 
@@ -28,6 +29,10 @@ export class AuthenticationService {
     return this.token;
   }
 
+  public getUserId() {
+    return this.userId;
+  }
+
   public getAuthStatusListener(): Observable<boolean> {
     return this.authStatusListener.asObservable();
   }
@@ -38,13 +43,14 @@ export class AuthenticationService {
 
   public autoAuthData() {
     const authInformation = this.getAuthDataOnReload();
-    if(!authInformation){
+    if (!authInformation) {
       return;
     }
     const now = new Date();
     const expiresIn = authInformation.expiration.getTime() - now.getTime();
     if (expiresIn > 0) {
       this.token = authInformation.token;
+      this.userId = authInformation.userId;
       this.isAuthenticated = true;
       this.setTimerForAuth(expiresIn / 1000);
       this.authStatusListener.next(true);
@@ -64,7 +70,7 @@ export class AuthenticationService {
 
   public loginUser(email: string, password: string) {
     const user: AuthenticationModel = { email: email, password: password }
-    this.httpClient.post<{ token: string, expires: number }>('http://localhost:3000/api/user/login', user)
+    this.httpClient.post<{ userId: string, token: string, expires: number }>('http://localhost:3000/api/user/login', user)
       .subscribe((response) => {
         const token = response.token;
         const now = new Date();
@@ -74,11 +80,12 @@ export class AuthenticationService {
           const expiration = new Date(now.getTime() + expiresIn * 1000);
           this.setTimerForAuth(expiresIn);
           this.isAuthenticated = true;
+          this.userId = response.userId;
           this.authStatusListener.next(true);
-          this.saveAuthData(token, expiration);
+          this.saveAuthData(token, expiration, this.userId);
           this.postsService.rerouteAppToPostList();
         }
-      })
+      });
   }
 
   public logout() {
@@ -87,6 +94,7 @@ export class AuthenticationService {
     this.authStatusListener.next(false);
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
+    this.userId = null;
     this.postsService.rerouteAppToPostList();
   }
 
@@ -99,22 +107,26 @@ export class AuthenticationService {
   private getAuthDataOnReload() {
     const token = localStorage.getItem('token');
     const expiration = localStorage.getItem('expiration');
+    const userId = localStorage.getItem('userId');
     if (!token && !expiration) {
         return;
     }
     return {
         token: token,
-        expiration: new Date(expiration)
+        expiration: new Date(expiration),
+        userId: userId
     }
   }
 
-  private saveAuthData(token: string, expirationdata: Date) {
-      localStorage.setItem('token',token);
+  private saveAuthData(token: string, expirationdata: Date, userId: string) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('userId', userId);
       localStorage.setItem('expiration', expirationdata.toISOString());
   }
 
   private clearAuthData() {
     localStorage.removeItem('token');
+    localStorage.removeItem('userId');
     localStorage.removeItem('expiration');
   }
 }

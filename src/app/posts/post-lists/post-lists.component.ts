@@ -14,7 +14,7 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 })
 export class PostListsComponent implements OnInit, OnDestroy {
   public postList: Post[] = [];
-  
+
   private postSubscriptions: Subscription;
   private authStatusSub: Subscription;
 
@@ -25,6 +25,7 @@ export class PostListsComponent implements OnInit, OnDestroy {
   public pageSizeOptions: Array<number> = [1, 2, 4, 10];
 
   public isUserAuthenticated: boolean = false;
+  public userId: string;
 
   constructor(
     private postsService: PostsService,
@@ -40,8 +41,10 @@ export class PostListsComponent implements OnInit, OnDestroy {
       this.totalPost = newPost.count;
     });
     this.isUserAuthenticated = this.authenticationService.isUserAuthenticated();
+    this.userId = this.authenticationService.getUserId();
     this.authStatusSub =  this.authenticationService.getAuthStatusListener().subscribe((authStatus) => {
         this.isUserAuthenticated = authStatus;
+        this.userId = this.authenticationService.getUserId();
     });
   }
 

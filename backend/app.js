@@ -9,7 +9,8 @@ const postRoutes = require('./routes/post');
 const userRoutes = require('./routes/user');
 
 // mongodb+srv://post-application-DB:9870228146@meanstackapp-x1a5a.mongodb.net/node-angular?retryWrites=true&w=majority
-mongoose.connect('mongodb://localhost/meanstackapp')
+// 'mongodb://localhost/meanstackapp'
+mongoose.connect('mongodb+srv://post-application-DB:9870228146@meanstackapp-x1a5a.mongodb.net/node-angular?retryWrites=true&w=majority')
   .then(() => {
     console.log("Connected to DB successfully");
   })
@@ -28,7 +29,7 @@ app.use((req, res, next) => {
   next();
 })
 
-// 
+//
 app.use("/api/posts", postRoutes);
 app.use('/api/user', userRoutes);
 

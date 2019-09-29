@@ -19,7 +19,7 @@ export class PostsService {
 
   public getPosts(postPerPage: number, currentPage: number) {
     const queryParams = `?pageSize=${postPerPage}&page=${currentPage}`;
-   
+
     this.httpClient
       .get<{ message: string; posts: any; count: number}>(
         "http://localhost:3000/api/posts" + queryParams
@@ -30,10 +30,11 @@ export class PostsService {
             title: post.title,
             content: post.content,
             id: post._id,
-            imagePath: post.imagepath
+            imagePath: post.imagepath,
+            creator: post.creator
           }
         }),
-        count: postData.count  
+        count: postData.count
       }
       })
       )
@@ -71,10 +72,10 @@ export class PostsService {
     let postData: Post | FormData;
     if( typeof post.imagePath === 'object') {
       postData = new FormData();
-      postData.append('title', post.title)
-      postData.append('content', post.content)
-      postData.append('id', post.id)
-      postData.append('image', post.imagePath)
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      postData.append('id', post.id);
+      postData.append('image', post.imagePath);
     } else {
       postData = {...post};
     }
