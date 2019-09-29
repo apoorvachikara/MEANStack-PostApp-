@@ -10,7 +10,8 @@ import {
   MatToolbarModule,
   MatExpansionModule,
   MatProgressSpinnerModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatDialogModule
 } from "@angular/material";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -19,11 +20,13 @@ import { AppComponent } from "./app.component";
 import { PostCreateComponent } from "./posts/post-create/post-create.component";
 import { HeaderComponent } from "./header/header/header.component";
 import { PostListsComponent } from "./posts/post-lists/post-lists.component";
-import { TestPipePipe } from './test-pipe.pipe';
-import { LoginComponent } from './auth/login/login.component';
-import { SignupComponent } from './auth/signup/signup.component';
-import { AuthenticationService } from './services/authentication/authentication.service';
-import { AuthinterceptorService } from './services/interceptor/authinterceptor.service';
+import { TestPipePipe } from "./test-pipe.pipe";
+import { LoginComponent } from "./auth/login/login.component";
+import { SignupComponent } from "./auth/signup/signup.component";
+import { AuthenticationService } from "./services/authentication/authentication.service";
+import { AuthinterceptorService } from "./services/interceptor/authinterceptor.service";
+import { ErrorinterceptorService } from "./services/interceptor/errorinterceptor.service";
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +36,8 @@ import { AuthinterceptorService } from './services/interceptor/authinterceptor.s
     PostListsComponent,
     TestPipePipe,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -48,9 +52,21 @@ import { AuthinterceptorService } from './services/interceptor/authinterceptor.s
     MatExpansionModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
+    MatDialogModule,
     HttpClientModule
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthinterceptorService, multi: true }],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthinterceptorService,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorinterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

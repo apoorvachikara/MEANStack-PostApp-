@@ -65,6 +65,8 @@ export class AuthenticationService {
     this.httpClient.post<{ message: string, result: AuthenticationModel }>("http://localhost:3000/api/user/signup", user)
       .subscribe(response => {
         console.log(response);
+      }, error => {
+        this.authStatusListener.next(false);
       })
   }
 
@@ -85,6 +87,8 @@ export class AuthenticationService {
           this.saveAuthData(token, expiration, this.userId);
           this.postsService.rerouteAppToPostList();
         }
+      }, error =>{
+        this.authStatusListener.next(false);
       });
   }
 

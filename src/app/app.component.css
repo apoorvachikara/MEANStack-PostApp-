@@ -7,3 +7,13 @@ app-post-lists .mat-accordion {
   top: 15px;
   position: relative;
 }
+
+.cdk-overlay-container .epsSelectorPanel {
+    top: 16px;
+    transform: none;
+    min-width: 100px !important;
+    width: 249px !important;
+    min-height: 200px !important;
+    height: 200px !important;
+    left: 20px !important;
+}
