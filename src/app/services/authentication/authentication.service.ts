@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { Subject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 import { PostsService } from '../postservice/posts.service';
 import { AuthenticationModel } from '../../auth/authentication.model';
-import { inflate } from 'zlib';
 
 
+const BackendUrl: string = environment.apiUrl + 'user';
 @Injectable({
   providedIn: 'root'
 })
@@ -62,17 +63,17 @@ export class AuthenticationService {
   public createUser(email: string, password: string) {
 
     const user: AuthenticationModel = { email: email, password: password }
-    this.httpClient.post<{ message: string, result: AuthenticationModel }>("http://localhost:3000/api/user/signup", user)
+    this.httpClient.post<{ message: string, result: AuthenticationModel }>(`${BackendUrl}/signup`, user)
       .subscribe(response => {
-        console.log(response);
+        this.router.navigate(['/']);
       }, error => {
         this.authStatusListener.next(false);
-      })
+      })    
   }
 
   public loginUser(email: string, password: string) {
     const user: AuthenticationModel = { email: email, password: password }
-    this.httpClient.post<{ userId: string, token: string, expires: number }>('http://localhost:3000/api/user/login', user)
+    this.httpClient.post<{ userId: string, token: string, expires: number }>(`${BackendUrl}/login`, user)
       .subscribe((response) => {
         const token = response.token;
         const now = new Date();

@@ -3,26 +3,15 @@ import { NgModule } from "@angular/core";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import {
-  MatInputModule,
-  MatCardModule,
-  MatButtonModule,
-  MatToolbarModule,
-  MatExpansionModule,
-  MatProgressSpinnerModule,
-  MatPaginatorModule,
-  MatDialogModule
-} from "@angular/material";
+
 
 import { AppRoutingModule } from "./app-routing.module";
+import { AngularMaterial } from './angular-material.module';
+import { PostsModule } from './posts/posts.module';import { AuthModule } from './auth/auth.module';
 
 import { AppComponent } from "./app.component";
-import { PostCreateComponent } from "./posts/post-create/post-create.component";
 import { HeaderComponent } from "./header/header/header.component";
-import { PostListsComponent } from "./posts/post-lists/post-lists.component";
 import { TestPipePipe } from "./test-pipe.pipe";
-import { LoginComponent } from "./auth/login/login.component";
-import { SignupComponent } from "./auth/signup/signup.component";
 import { AuthenticationService } from "./services/authentication/authentication.service";
 import { AuthinterceptorService } from "./services/interceptor/authinterceptor.service";
 import { ErrorinterceptorService } from "./services/interceptor/errorinterceptor.service";
@@ -31,28 +20,16 @@ import { ErrorComponent } from './error/error.component';
 @NgModule({
   declarations: [
     AppComponent,
-    PostCreateComponent,
     HeaderComponent,
-    PostListsComponent,
     TestPipePipe,
-    LoginComponent,
-    SignupComponent,
     ErrorComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule,
-    FormsModule,
     BrowserAnimationsModule,
-    MatInputModule,
-    MatCardModule,
-    MatButtonModule,
-    MatToolbarModule,
-    MatExpansionModule,
-    MatProgressSpinnerModule,
-    MatPaginatorModule,
-    MatDialogModule,
+    AngularMaterial,
+    PostsModule,
     HttpClientModule
   ],
   providers: [
@@ -67,6 +44,7 @@ import { ErrorComponent } from './error/error.component';
       multi: true
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ErrorComponent]
 })
-export class AppModule {}
+export class AppModule { }

@@ -8,7 +8,11 @@ app-post-lists .mat-accordion {
   position: relative;
 }
 
-.cdk-overlay-container .epsSelectorPanel {
+ .cdk-overlay-container{
+  background-color: black;
+}
+
+::ng-deep .cdk-overlay-container .epsSelectorPanel {
     top: 16px;
     transform: none;
     min-width: 100px !important;

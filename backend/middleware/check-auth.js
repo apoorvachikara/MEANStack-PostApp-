@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken');
 module.exports = (req, res, next) => {
     try{
         const token = req.headers.authorization.split(" ")[1];
-        const decodedToken = jwt.verify(token, 'string_to_make_the_JWT_token_stronger');
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         req.userData = {email: decodedToken.email, userId: decodedToken.userId}
         next();
     }
     catch (error) {
         res.status(401).json({
-            messgae: " Authentication failed"
+            message: " Authentication failed"
         })
     }
 

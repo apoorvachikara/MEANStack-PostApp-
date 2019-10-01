@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm, FormGroup, FormControlName, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { PostsService } from '../../services/postservice/posts.service';
 import { Post } from '../post.model';
 import { mimeType } from '../../validators/mime-type.validator';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { AuthinterceptorService } from 'src/app/services/interceptor/authinterceptor.service';
 
 @Component({
   selector: 'app-post-create',
   templateUrl: './post-create.component.html',
   styleUrls: ['./post-create.component.css']
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
 
   public form: FormGroup;
 
@@ -21,13 +24,18 @@ export class PostCreateComponent implements OnInit {
   public loadingSpinner: boolean = false;
   public imagePreview: string | ArrayBuffer;
 
+  private authSubs: Subscription;
+
   constructor(
     private postsService: PostsService,
     private route: ActivatedRoute,
+    private authenticationService: AuthenticationService,
   ) { }
 
   ngOnInit() {
-
+    this.authSubs = this.authenticationService.getAuthStatusListener().subscribe( authStatus => {
+      this.loadingSpinner = false;
+    })
     this.initializeForm();
     this.route.paramMap
       .subscribe((paramMap: ParamMap) => {
@@ -36,7 +44,7 @@ export class PostCreateComponent implements OnInit {
           this.postID = paramMap.get('postID');
           this.loadingSpinner = true;
           this.postsService.getEditedPost(this.postID).subscribe(postData => {
-            this.post = { id: postData['posts'][0]['_id'], title: postData['posts'][0]['title'], content: postData['posts'][0]['content'], imagePath: postData['posts'][0]['imagePath'], creator: null};
+            this.post = { id: postData['posts'][0]['_id'], title: postData['posts'][0]['title'], content: postData['posts'][0]['content'], imagePath: postData['posts'][0]['imagePath'], creator: null };
             this.form.setValue({
               title: postData['posts'][0]['title'],
               content: postData['posts'][0]['content'],
@@ -56,13 +64,13 @@ export class PostCreateComponent implements OnInit {
     this.form = new FormGroup({
       title: new FormControl(null, { validators: [Validators.required, Validators.minLength(3)] }),
       content: new FormControl(null, { validators: [Validators.required] }),
-      image: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType]})
+      image: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType] })
     });
   }
 
 
   public savePost() {
-    console.log(this.form, "saveform");
+
     if (this.form.invalid) {
       return;
     } else if (this.mode === 'create') {
@@ -97,4 +105,9 @@ export class PostCreateComponent implements OnInit {
     };
     reader.readAsDataURL(file);
   }
+
+  ngOnDestroy() {
+    this.authSubs.unsubscribe();
+  }
+
 }

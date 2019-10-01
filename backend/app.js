@@ -10,7 +10,7 @@ const userRoutes = require('./routes/user');
 
 // mongodb+srv://post-application-DB:9870228146@meanstackapp-x1a5a.mongodb.net/node-angular?retryWrites=true&w=majority
 // 'mongodb://localhost/meanstackapp'
-mongoose.connect('mongodb+srv://post-application-DB:9870228146@meanstackapp-x1a5a.mongodb.net/node-angular?retryWrites=true&w=majority')
+mongoose.connect('mongodb://localhost/meanstackapp')
   .then(() => {
     console.log("Connected to DB successfully");
   })

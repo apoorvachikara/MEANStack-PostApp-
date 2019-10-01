@@ -1,8 +1,6 @@
 import { Injectable } from "@angular/core";
 import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA
+  MatDialog
 } from "@angular/material/dialog";
 import {
   HttpInterceptor,
@@ -30,7 +28,6 @@ export class ErrorinterceptorService implements HttpInterceptor {
         width: '300px',
         height: '300px',
         panelClass: 'epsSelectorPanel'});
-        alert(error.error.message);
         return throwError(error);
       })
     );

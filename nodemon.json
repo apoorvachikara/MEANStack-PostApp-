@@ -1,0 +1,6 @@
+{
+    "env" : {
+        "Mongo_Atlas_Passwd": "passwd",
+        "JWT_SECRET": "string_to_make_the_JWT_token_stronger"
+    }
+}
